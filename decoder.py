@@ -1,6 +1,13 @@
+"""
+    Parisa Daj
+    U00743495
+    HW4 Image Processing
+    Apr 12, 2022
+    source: https://github.com/ghallak/jpeg-python
+"""
+
 import argparse
 import math
-import numpy as np
 from utils import *
 from scipy import fftpack
 from PIL import Image
