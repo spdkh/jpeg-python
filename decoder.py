@@ -3,14 +3,31 @@
     U00743495
     HW4 Image Processing
     Apr 12, 2022
-    source: https://github.com/ghallak/jpeg-python
+    source1: https://github.com/ghallak/jpeg-python
+    source2: https://stackoverflow.com/questions/61348558/rgb-to-yiq-and-back-in-python
 """
 
 import argparse
 import math
 from utils import *
 from scipy import fftpack
-from PIL import Image
+import matplotlib.pyplot as plt
+
+
+
+def transformYIQ2RGB(imgYIQ: np.ndarray) -> np.ndarray:
+    """
+    Converts an YIQ image to RGB color space
+    :param imgYIQ: An Image in YIQ
+    :return: A RGB in image color space
+    """
+    yiq_from_rgb = np.array([[0.299, 0.587, 0.114],
+                             [0.59590059, -0.27455667, -0.32134392],
+                             [0.21153661, -0.52273617, 0.31119955]])
+    OrigShape=imgYIQ.shape
+    return np.dot(imgYIQ.reshape(-1,3), np.linalg.inv(yiq_from_rgb).transpose()).reshape(OrigShape)
+
+    pass
 
 
 class JPEGFileReader:
@@ -185,9 +202,15 @@ def main():
             block = idct_2d(dct_matrix)
             npmat[i:i+8, j:j+8, c] = block + 128
 
-    image = Image.fromarray(npmat, 'YCbCr')
-    image = image.convert('RGB')
-    image.show()
+    # image = Image.fromarray(npmat, 'YCbCr')
+
+    # image = image.convert('RGB')
+
+    image = npmat#transformYIQ2RGB(npmat)
+    # print(np.shape(image))
+    # image = image.convert('RGB')
+    plt.imshow(image)
+    plt.show()
 
 
 if __name__ == "__main__":

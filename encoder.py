@@ -3,7 +3,8 @@
     U00743495
     HW4 Image Processing
     Apr 12, 2022
-    source: https://github.com/ghallak/jpeg-python
+    source1: https://github.com/ghallak/jpeg-python
+    source2: https://stackoverflow.com/questions/61348558/rgb-to-yiq-and-back-in-python
 """
 
 import argparse
@@ -55,6 +56,21 @@ def run_length_encode(arr):
             values.append(int_to_binstr(elem))
             run_length = 0
     return symbols, values
+
+
+def transformRGB2YIQ(imgRGB: np.ndarray) -> np.ndarray:
+    """
+    Converts an RGB image to YIQ color space
+    :param imgRGB: An Image in RGB
+    :return: A YIQ in image color space
+    """
+    yiq_from_rgb = np.array([[0.299, 0.587, 0.114],
+                             [0.59590059, -0.27455667, -0.32134392],
+                             [0.21153661, -0.52273617, 0.31119955]])
+    OrigShape=imgRGB.shape
+    return np.dot(imgRGB.reshape(-1,3), yiq_from_rgb.transpose()).reshape(OrigShape)
+
+    pass
 
 
 def write_to_file(filepath, dc, ac, blocks_count, tables):
@@ -118,8 +134,10 @@ def main():
     output_file = args.output
 
     image = Image.open(input_file)
-    ycbcr = image.convert('YCbCr')
-
+    # image = np.resize(image, (32, 32, 3))
+    # print(np.shape(image))
+    # ycbcr = image.convert('YIQ') #Convert color format
+    ycbcr = image #transformRGB2YIQ(np.array(image))
     npmat = np.array(ycbcr, dtype=np.uint8)
 
     rows, cols = npmat.shape[0], npmat.shape[1]
